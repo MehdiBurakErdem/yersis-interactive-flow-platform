@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Şanlıurfa · Gaziantep · Kilis Üretim ve Satış Yeri Akış Platformu</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="loading">
+  <div class="ring"></div>
+  <div class="ltxt" id="loading-text">Harita hazırlanıyor…</div>
+</div>
+
+<div id="canvas-wrap"></div>
+
+<div id="topbar">
+  <div id="brand">
+    <img class="seal" src="assets/ministry-seal.png" alt="T.C. Sanayi ve Teknoloji Bakanlığı" />
+    <div class="brand-text">
+      <div class="t1">T.C. SANAYİ VE TEKNOLOJİ BAKANLIĞI</div>
+      <div class="t2" id="brand-t2">Üç İl Üretim &amp; Satış Yeri Akış Platformu</div>
+      <div class="t3" id="brand-t3">Şanlıurfa · Gaziantep · Kilis — 445 yerleşim verisi</div>
+    </div>
+  </div>
+  <div id="kpi-row">
+    <div class="kpi-card"><div class="val" id="kpi-il">—</div><div class="lbl">İL</div></div>
+    <div class="kpi-card"><div class="val" id="kpi-hareket">—</div><div class="lbl">HAREKET</div></div>
+    <div class="kpi-card"><div class="val" id="kpi-rota">—</div><div class="lbl">AKTİF ROTA</div></div>
+    <div class="kpi-card"><div class="val" id="kpi-urun">—</div><div class="lbl" id="kpi-urun-lbl">ÜRÜN TÜRÜ</div></div>
+  </div>
+</div>
+
+<div id="layer-tabs"></div>
+
+<div id="left-panel">
+  <div class="panel-title">İL FİLTRESİ<small>Tek il seçince kendi-içi hareket sayısı da görünür</small></div>
+  <div id="il-filter-list"></div>
+
+  <div class="section-div"></div>
+  <div class="panel-title" id="filter-title">ÜRÜN / FAALİYET TÜRÜ<small id="filter-hint">Excel "Ürün" sütunundan otomatik okunur</small></div>
+  <div id="chip-list"></div>
+
+  <div class="section-div"></div>
+  <div class="panel-title" id="dir-title" style="display:none;">YÖN</div>
+  <div id="dir-row">
+    <div class="dir-btn active" data-dir="GIDIS">Gidiş (dışa)</div>
+    <div class="dir-btn" data-dir="GELIS">Geliş (içe)</div>
+  </div>
+
+  <div class="panel-title">OYNATIM</div>
+  <div id="playback-row">
+    <button class="pb-btn primary" id="btn-play" title="Oynat/Duraklat">▶</button>
+    <button class="pb-btn" id="btn-restart" title="Yeniden başlat">↻</button>
+  </div>
+  <div id="speed-row">
+    <div class="speed-btn" data-speed="0.55">Yavaş</div>
+    <div class="speed-btn active" data-speed="1">Normal</div>
+    <div class="speed-btn" data-speed="2.1">Hızlı</div>
+  </div>
+
+  <div class="section-div"></div>
+  <div class="panel-title">VERİ KAYNAĞI</div>
+  <button id="upload-btn">⇪ Excel / CSV Yükle</button>
+  <input type="file" id="file-input" accept=".xlsx,.csv" />
+  <div id="data-note"></div>
+</div>
+
+<div id="right-panel">
+  <div id="right-title">TÜMÜ</div>
+  <div id="right-sub">Seçili faaliyetin genel özeti</div>
+  <div class="stat-grid" id="stat-grid"></div>
+  <div id="flow-list-wrap">
+    <div class="flow-list-title">HAREKET SIRALAMASI</div>
+    <div id="flow-list"></div>
+  </div>
+</div>
+
+<div id="il-detail">
+  <span class="close" id="il-detail-close">✕</span>
+  <h3 id="il-detail-title">—</h3>
+  <div class="row"><span id="il-out-lbl">Toplam Çıkış</span><b id="il-out">0</b></div>
+  <div class="row"><span id="il-in-lbl">Toplam Giriş</span><b id="il-in">0</b></div>
+  <div class="row" id="il-top-out-row"><span id="il-top-out-lbl">En çok gönderdiği il</span><b id="il-top-out">—</b></div>
+  <div class="row" id="il-top-in-row"><span id="il-top-in-lbl">En çok aldığı il</span><b id="il-top-in">—</b></div>
+  <div class="row" id="il-extra1-row" style="display:none;"><span id="il-extra1-lbl">—</span><b id="il-extra1">—</b></div>
+  <div class="row" id="il-extra2-row" style="display:none;"><span id="il-extra2-lbl">—</span><b id="il-extra2">—</b></div>
+  <div class="prod-title" id="il-prod-title">FAALİYET DAĞILIMI</div>
+  <div id="il-prod-list"></div>
+  <div class="prod-title" id="il-prod-title-in" style="display:none;">ALINAN</div>
+  <div id="il-prod-list-in"></div>
+</div>
+
+<div id="tooltip"></div>
+
+<div id="map-controls">
+  <div class="mc-btn" id="mc-plus">＋</div>
+  <div class="mc-btn" id="mc-minus">－</div>
+  <div class="mc-btn" id="mc-home" title="Türkiye'ye odaklan">⌂</div>
+  <div class="mc-btn" id="mc-full" title="Tam ekran">⛶</div>
+</div>
+
+<div id="legend">
+  <div class="lg-item"><span class="lg-dot" id="legend-flow-dot" style="background:#3fd7c7;"></span><span id="legend-flow-txt">Akış bağlantısı</span></div>
+  <div class="lg-item"><span class="lg-dot" style="background:#c9a24b;"></span><span id="legend-self-txt">İl içi hareket</span></div>
+  <div class="lg-item"><span class="lg-dot" id="legend-active-dot" style="background:#5ec3ff;"></span>Aktif il</div>
+</div>
+
+<div id="s9b-panel">
+  <div id="s9b-header">
+    <div>
+      <div class="htxt">Soru 9b — En Çok Zorluk Yaşanan Konular</div>
+      <div class="hsub">Temel ihtiyaç temininde yaşanan zorluklar · genişletmek için tıklayın</div>
+    </div>
+    <div id="s9b-chevron">▾</div>
+  </div>
+  <div id="s9b-body"><div id="s9b-inner"></div></div>
+</div>
+
+<script src="data.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
